@@ -1,15 +1,13 @@
-#include <QSettings>
-#include <QPainter>
-#include <QMenu>
-#include <QPaintEvent>
-#include <math.h>
-#include <stdlib.h>
-#include <QTimer>
-#include <qmmp/qmmp.h>
-
-#include "inlines.h"
 #include "blurxrays.h"
 #include "colorwidget.h"
+#include "inlines.h"
+
+#include <QMenu>
+#include <QSettings>
+#include <QPainter>
+#include <math.h>
+#include <QTimer>
+#include <qmmp/qmmp.h>
 
 BlurXRays::BlurXRays(QWidget *parent)
     : Visual(parent)
@@ -109,8 +107,28 @@ void BlurXRays::showEvent(QShowEvent *)
 void BlurXRays::paintEvent(QPaintEvent *e)
 {
     QPainter painter(this);
-    painter.fillRect(e->rect(), Qt::black);
-    draw(&painter);
+    painter.fillRect(rect(), Qt::black);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+
+    if(m_rows == 0)
+    {
+        return;
+    }
+
+    blur();
+
+    int value = m_rows / 2 - m_intern_vis_data[0];
+    value = qBound(0, value, m_rows - 1);
+
+    for(int i = 0; i < m_cols; ++i)
+    {
+        int y = m_rows / 2 - m_intern_vis_data[i];
+        y = qBound(0, y, m_rows - 1);
+        drawLine(i, value, y);
+        value = y;
+    }
+
+    painter.drawImage(0, 0, QImage((unsigned char *)m_image, m_cols, m_rows, QImage::Format_RGB32));
 }
 
 void BlurXRays::contextMenuEvent(QContextMenuEvent *)
@@ -140,14 +158,14 @@ void BlurXRays::process(float *left, float *)
         }
 
         m_intern_vis_data = new int[m_cols]{0};
-        m_image_size = (m_cols << 2) * (m_rows + 2);
+        m_imageSize = (m_cols << 2) * (m_rows + 2);
 
         if(m_image)
         {
             delete[] m_image;
         }
 
-        m_image = new unsigned int[m_image_size]{0};
+        m_image = new unsigned int[m_imageSize]{0};
         m_corner = m_image + m_cols + 1;
     }
 
@@ -164,18 +182,18 @@ void BlurXRays::process(float *left, float *)
 
 void BlurXRays::blur()
 {
-    for(int y = 0; y < m_rows; y ++)
+    for(int y = 0; y < m_rows; ++y)
     {
-        uint32_t * p = m_corner + m_cols * y;
-        uint32_t * end = p + m_cols;
-        uint32_t * plast = p - m_cols;
-        uint32_t * pnext = p + m_cols;
+        uint32_t *p = m_corner + m_cols * y;
+        uint32_t *end = p + m_cols;
+        uint32_t *plast = p - m_cols;
+        uint32_t *pnext = p + m_cols;
 
         /* We do a quick and dirty average of four color values, first masking
          * off the lowest two bits.  Over a large area, this masking has the net
          * effect of subtracting 1.5 from each value, which by a happy chance
          * is just right for a gradual fade effect. */
-        for(; p < end; p ++)
+        for(; p < end; ++p)
         {
             *p = ((*plast ++ &0xFCFCFC) + (p[-1] & 0xFCFCFC) + (p[1] & 0xFCFCFC) + (*pnext ++ &0xFCFCFC)) >> 2;
         }
@@ -208,27 +226,4 @@ void BlurXRays::drawLine(int x, int y1, int y2)
     {
         *p = !m_color.isValid() ? 0xFF3F7F : m_color.rgba();
     }
-}
-
-void BlurXRays::draw(QPainter *p)
-{
-    if(m_rows == 0)
-    {
-        return;
-    }
-
-    blur();
-
-    int value = m_rows / 2 - m_intern_vis_data[0];
-    value = qBound(0, value, m_rows - 1);
-
-    for(int i = 0; i < m_cols; i++)
-    {
-        int y = m_rows / 2 - m_intern_vis_data[i];
-        y = qBound(0, y, m_rows - 1);
-        drawLine(i, value, y);
-        value = y;
-    }
-
-    p->drawImage(0, 0, QImage((unsigned char *)m_image, m_cols, m_rows, QImage::Format_RGB32));
 }

@@ -32,8 +32,8 @@ public:
     virtual ~BlurXRays();
 
 public slots:
-    virtual void start() override;
-    virtual void stop() override;
+    virtual void start() override final;
+    virtual void stop() override final;
 
 private slots:
     void readSettings();
@@ -43,18 +43,17 @@ private slots:
     void setFullScreen(bool yes);
 
 private:
-    virtual void hideEvent(QHideEvent *e) override;
-    virtual void showEvent(QShowEvent *e) override;
-    virtual void paintEvent(QPaintEvent *e) override;
-    virtual void contextMenuEvent(QContextMenuEvent *e) override;
+    virtual void hideEvent(QHideEvent *e) override final;
+    virtual void showEvent(QShowEvent *e) override final;
+    virtual void paintEvent(QPaintEvent *e) override final;
+    virtual void contextMenuEvent(QContextMenuEvent *e) override final;
 
     void process(float *left, float *right);
     void blur();
     void drawLine(int x, int y1, int y2);
-    void draw(QPainter *p);
 
     QColor m_color;
-    int m_image_size = 0;
+    int m_imageSize = 0;
     unsigned int *m_image = nullptr, *m_corner = nullptr;
     QTimer *m_timer = nullptr;
     int m_rows = 0, m_cols = 0;
