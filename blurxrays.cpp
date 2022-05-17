@@ -104,7 +104,7 @@ void BlurXRays::showEvent(QShowEvent *)
     m_timer->start();
 }
 
-void BlurXRays::paintEvent(QPaintEvent *e)
+void BlurXRays::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     painter.fillRect(rect(), Qt::black);
