@@ -21,16 +21,6 @@
 
 #include <QDialog>
 
-/*! @brief The class of the color star point core.
- * @author Greedysky <greedysky@163.com>
- */
-typedef struct StarPoint
-{
-    QPoint m_pt = QPoint(0, 0);
-    int m_alpha = 255;
-}StarPoint;
-
-
 namespace Ui {
 class ColorWidget;
 }
@@ -48,15 +38,6 @@ public:
     explicit ColorWidget(QWidget *parent = nullptr);
 
     virtual ~ColorWidget();
-
-    /*!
-     * Read single color config.
-     */
-    static QColor readSingleColorConfig(const QString &value);
-    /*!
-     * Write single color config.
-     */
-    static QString writeSingleColorConfig(const QColor &color);
 
     /*!
      * Read color config.
@@ -79,16 +60,7 @@ public:
     /*!
      * Get selected colors.
      */
-    QList<QColor> getColors() const;
-
-    /*!
-     * Set current color.
-     */
-    void setColor(const QColor &color);
-    /*!
-     * Get selected color.
-     */
-    QColor getColor() const;
+    QList<QColor> colors() const;
 
 public slots:
     /*!
@@ -116,9 +88,9 @@ protected:
     /*!
      * Override the widget event.
      */
-    virtual void mousePressEvent(QMouseEvent *event) override;
-    virtual void mouseMoveEvent(QMouseEvent *event) override;
-    virtual void mouseReleaseEvent(QMouseEvent *event) override;
+    virtual void mousePressEvent(QMouseEvent *event) override final;
+    virtual void mouseMoveEvent(QMouseEvent *event) override final;
+    virtual void mouseReleaseEvent(QMouseEvent *event) override final;
 
     Ui::ColorWidget *m_ui;
     QPoint m_pressAt;
@@ -127,4 +99,4 @@ protected:
 
 };
 
-#endif // ColorWidget_H
+#endif
