@@ -69,7 +69,7 @@ void BlurXRays::writeSettings()
 void BlurXRays::changeColor()
 {
     ColorWidget c;
-    c.setSingleColorMode(true);
+    c.setSingleMode(true);
     c.setColors(m_colors);
     if(c.exec())
     {
