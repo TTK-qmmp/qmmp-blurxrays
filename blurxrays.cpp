@@ -42,7 +42,9 @@ BlurXRays::~BlurXRays()
 void BlurXRays::start()
 {
     if(isVisible())
+    {
         m_timer->start();
+    }
 }
 
 void BlurXRays::stop()
@@ -89,9 +91,13 @@ void BlurXRays::updateVisual()
 void BlurXRays::setFullScreen(bool yes)
 {
     if(yes)
+    {
         setWindowState(windowState() | Qt::WindowFullScreen);
+    }
     else
+    {
         setWindowState(windowState() & ~Qt::WindowFullScreen);
+    }
 }
 
 void BlurXRays::hideEvent(QHideEvent *)
