@@ -3,7 +3,7 @@ include($$PWD/common/widget.pri)
 
 HEADERS += blurxrays.h \
            visualblurxraysfactory.h
-    
+
 SOURCES += blurxrays.cpp \
            visualblurxraysfactory.cpp
 
