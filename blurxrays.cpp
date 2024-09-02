@@ -54,7 +54,11 @@ void BlurXRays::stop()
 
 void BlurXRays::readSettings()
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+    QSettings settings;
+#else
     QSettings settings(Qmmp::configFile(), QSettings::IniFormat);
+#endif
     settings.beginGroup("BlurXRays");
     m_colors = ColorWidget::readColorConfig(settings.value("colors").toString());
     settings.endGroup();
@@ -62,7 +66,11 @@ void BlurXRays::readSettings()
 
 void BlurXRays::writeSettings()
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+    QSettings settings;
+#else
     QSettings settings(Qmmp::configFile(), QSettings::IniFormat);
+#endif
     settings.beginGroup("BlurXRays");
     settings.setValue("colors", ColorWidget::writeColorConfig(m_colors));
     settings.endGroup();
