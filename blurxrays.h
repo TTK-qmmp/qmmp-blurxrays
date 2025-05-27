@@ -57,7 +57,7 @@ private:
     unsigned int *m_image = nullptr, *m_corner = nullptr;
     QTimer *m_timer = nullptr;
     int m_rows = 0, m_cols = 0;
-    int *m_intern_vis_data = nullptr;
+    int *m_visualData = nullptr;
     float m_left[QMMP_VISUAL_NODE_SIZE];
     float m_right[QMMP_VISUAL_NODE_SIZE];
     QAction *m_screenAction = nullptr;

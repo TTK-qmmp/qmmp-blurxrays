@@ -1,6 +1,5 @@
 #include "blurxrays.h"
 #include "colorwidget.h"
-#include "inlines.h"
 
 #include <QMenu>
 #include <QSettings>
@@ -28,15 +27,8 @@ BlurXRays::BlurXRays(QWidget *parent)
 
 BlurXRays::~BlurXRays()
 {
-    if(m_intern_vis_data)
-    {
-        delete[] m_intern_vis_data;
-    }
-
-    if(m_image)
-    {
-        delete[] m_image;
-    }
+    delete[] m_visualData;
+    delete[] m_image;
 }
 
 void BlurXRays::start()
@@ -131,12 +123,12 @@ void BlurXRays::paintEvent(QPaintEvent *)
 
     blur();
 
-    int value = m_rows / 2 - m_intern_vis_data[0];
+    int value = m_rows / 2 - m_visualData[0];
         value = qBound(0, value, m_rows - 1);
 
     for(int i = 0; i < m_cols; ++i)
     {
-        int y = m_rows / 2 - m_intern_vis_data[i];
+        int y = m_rows / 2 - m_visualData[i];
             y = qBound(0, y, m_rows - 1);
         drawLine(i, value, y);
         value = y;
@@ -166,19 +158,11 @@ void BlurXRays::process(float *left, float *)
         m_rows = rows;
         m_cols = cols;
 
-        if(m_intern_vis_data)
-        {
-            delete[] m_intern_vis_data;
-        }
-
-        m_intern_vis_data = new int[m_cols]{0};
+        delete[] m_visualData;
+        m_visualData = new int[m_cols]{0};
         m_imageSize = (m_cols << 2) * (m_rows + 2);
 
-        if(m_image)
-        {
-            delete[] m_image;
-        }
-
+        delete[] m_image;
         m_image = new unsigned int[m_imageSize]{0};
         m_corner = m_image + m_cols + 1;
     }
@@ -189,8 +173,8 @@ void BlurXRays::process(float *left, float *)
     for(int i = 0; i < m_cols; ++i)
     {
         pos += step;
-        m_intern_vis_data[i] = int(left[pos >> 8] * m_rows / 2);
-        m_intern_vis_data[i] = qBound(-m_rows / 2, m_intern_vis_data[i], m_rows / 2);
+        m_visualData[i] = int(left[pos >> 8] * m_rows / 2);
+        m_visualData[i] = qBound(-m_rows / 2, m_visualData[i], m_rows / 2);
     }
 }
 

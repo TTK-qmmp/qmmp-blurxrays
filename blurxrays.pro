@@ -1,4 +1,3 @@
-include($$PWD/common/common.pri)
 include($$PWD/common/widget.pri)
 
 HEADERS += blurxrays.h \
