@@ -4,7 +4,6 @@
 #include <QMenu>
 #include <QSettings>
 #include <QPainter>
-#include <math.h>
 #include <QTimer>
 #include <qmmp/qmmp.h>
 
@@ -70,12 +69,12 @@ void BlurXRays::writeSettings()
 
 void BlurXRays::changeColor()
 {
-    ColorWidget c;
-    c.setSingleMode(true);
-    c.setColors(m_colors);
-    if(c.exec())
+    ColorWidget dialog;
+    dialog.setSingleMode(true);
+    dialog.setColors(m_colors);
+    if(dialog.exec())
     {
-        m_colors = c.colors();
+        m_colors = dialog.colors();
     }
 }
 
@@ -134,7 +133,7 @@ void BlurXRays::paintEvent(QPaintEvent *)
         value = y;
     }
 
-    painter.drawImage(0, 0, QImage((unsigned char *)m_image, m_cols, m_rows, QImage::Format_RGB32));
+    painter.drawImage(0, 0, QImage((uchar*)m_image, m_cols, m_rows, QImage::Format_RGB32));
 }
 
 void BlurXRays::contextMenuEvent(QContextMenuEvent *)
@@ -144,6 +143,7 @@ void BlurXRays::contextMenuEvent(QContextMenuEvent *)
 
     menu.addAction(m_screenAction);
     menu.addSeparator();
+
     menu.addAction(tr("Color"), this, SLOT(changeColor()));
     menu.exec(QCursor::pos());
 }
@@ -159,10 +159,11 @@ void BlurXRays::process(float *left, float *)
         m_cols = cols;
 
         delete[] m_visualData;
+        delete[] m_image;
+
         m_visualData = new int[m_cols]{0};
         m_imageSize = (m_cols << 2) * (m_rows + 2);
 
-        delete[] m_image;
         m_image = new unsigned int[m_imageSize]{0};
         m_corner = m_image + m_cols + 1;
     }
