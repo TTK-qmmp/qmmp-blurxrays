@@ -23,6 +23,16 @@ const char* MPushButtonStyle01 = " \
 #  define QtSkipEmptyParts QString::SkipEmptyParts
 #endif
 
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+#  define QtMouseGlobalX(p) p->globalPosition().x()
+#  define QtMouseGlobalY(p) p->globalPosition().y()
+#  define QtMouseGlobalPos(p) p->globalPosition().toPoint()
+#else
+#  define QtMouseGlobalX(p) p->globalX()
+#  define QtMouseGlobalY(p) p->globalY()
+#  define QtMouseGlobalPos(p) p->globalPos()
+#endif
+
 ColorWidget::ColorWidget(QWidget *parent)
     : QDialog(parent),
       m_ui(new Ui::ColorWidget)
@@ -243,7 +253,7 @@ void ColorWidget::paintEvent(QPaintEvent *event)
 void ColorWidget::mousePressEvent(QMouseEvent *event)
 {
     QWidget::mousePressEvent(event);
-    m_pressAt = event->globalPos();
+    m_pressAt = QtMouseGlobalPos(event);
     if(event->button() == Qt::LeftButton)
     {
         m_leftButtonPress = true;
@@ -259,16 +269,16 @@ void ColorWidget::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
-    const int xpos = event->globalX() - m_pressAt.x();
-    const int ypos = event->globalY() - m_pressAt.y();
-    m_pressAt = event->globalPos();
+    const int xpos = QtMouseGlobalX(event) - m_pressAt.x();
+    const int ypos = QtMouseGlobalY(event) - m_pressAt.y();
+    m_pressAt = QtMouseGlobalPos(event);
     move(x() + xpos, y() + ypos);
 }
 
 void ColorWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     QWidget::mouseReleaseEvent(event);
-    m_pressAt = event->globalPos();
+    m_pressAt = QtMouseGlobalPos(event);
     m_leftButtonPress = false;
 }
 
