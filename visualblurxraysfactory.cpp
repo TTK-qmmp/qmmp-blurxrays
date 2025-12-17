@@ -31,7 +31,6 @@ void VisualBlurXRaysFactory::showAbout(QWidget *parent)
 {
     QMessageBox::about(parent, tr("About BlurXRays Visual Plugin"),
                        tr("Qmmp BlurXRays Visual Plugin") + "\n" +
-                       tr("This plugin adds BlurXRays visualization") + "\n" +
                        tr("Written by: Greedysky <greedysky@163.com>"));
 }
 
