@@ -112,8 +112,8 @@ void BlurXRays::showEvent(QShowEvent *)
 void BlurXRays::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.fillRect(rect(), Qt::black);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    painter.fillRect(rect(), Qt::black);
 
     if(m_rows == 0)
     {
